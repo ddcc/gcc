@@ -26,7 +26,9 @@
 #include <bits/c++config.h>
 #include "new"
 
-_GLIBCXX_WEAK_DEFINITION void
+_GLIBCXX_WEAK_DEFINITION 
+__attribute__((transaction_safe))
+void
 operator delete(void* ptr, std::size_t) _GLIBCXX_USE_NOEXCEPT
 {
   ::operator delete (ptr);

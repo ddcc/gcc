@@ -64,6 +64,8 @@
 #include <ext/aligned_buffer.h>
 #endif
 
+namespace{/*a hack for tm-safe aborts*/__attribute__((transaction_pure))void transaction_wrapped_abort(){__builtin_abort();}}
+
 namespace std _GLIBCXX_VISIBILITY(default)
 {
   namespace __detail
@@ -82,19 +84,24 @@ namespace std _GLIBCXX_VISIBILITY(default)
       _List_node_base* _M_next;
       _List_node_base* _M_prev;
 
+      __attribute__((transaction_safe))
       static void
       swap(_List_node_base& __x, _List_node_base& __y) _GLIBCXX_USE_NOEXCEPT;
 
+      __attribute__((transaction_safe))
       void
       _M_transfer(_List_node_base* const __first,
 		  _List_node_base* const __last) _GLIBCXX_USE_NOEXCEPT;
 
+      __attribute__((transaction_safe))
       void
       _M_reverse() _GLIBCXX_USE_NOEXCEPT;
 
+      __attribute__((transaction_safe))
       void
       _M_hook(_List_node_base* const __position) _GLIBCXX_USE_NOEXCEPT;
 
+      __attribute__((transaction_safe))
       void
       _M_unhook() _GLIBCXX_USE_NOEXCEPT;
     };
@@ -1795,7 +1802,7 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
       {
 	if (std::__alloc_neq<typename _Base::_Node_alloc_type>::
 	    _S_do_it(_M_get_Node_allocator(), __x._M_get_Node_allocator()))
-	  __builtin_abort();
+          /*__builtin_abort();*/transaction_wrapped_abort();
       }
 
       // Used to implement resize.
